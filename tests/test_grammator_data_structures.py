@@ -89,6 +89,95 @@ def test_tuple_one():
         }
     ])
 
+def test_tuple_one_star():
+    "( *a, )"
+    parse_simple([
+        ('LEFT_PARENTHESIS', '(', [], []),
+        ('STAR', '*', [], []),
+        ('NAME', 'a'),
+        ('COMMA', ',', [], [('SPACE', ' ')]),
+        ('RIGHT_PARENTHESIS', ')', [], []),
+    ], [
+        {
+            "with_parenthesis": True,
+            "first_formatting": [],
+            "second_formatting": [],
+            "third_formatting": [],
+            "fourth_formatting": [],
+            "type": "tuple",
+            "value": [
+                {
+                    "type": "star_expression",
+                    "formatting": [],
+                    "value": {
+                        "type": "name",
+                        "value": "a",
+                    }
+                },
+                {
+                    "type": "comma",
+                    "first_formatting": [],
+                    "second_formatting": [{"type": "space", "value": " "}],
+                }
+            ],
+        }
+    ])
+
+def test_tuple_more_star():
+    "( *a, b, *c )"
+    parse_simple([
+        ('LEFT_PARENTHESIS', '(', [], []),
+        ('STAR', '*', [], []),
+        ('NAME', 'a'),
+        ('COMMA', ',', [], [('SPACE', ' ')]),
+        ('NAME', 'b'),
+        ('COMMA', ',', [], [('SPACE', ' ')]),
+        ('STAR', '*', [], []),
+        ('NAME', 'c'),
+        ('RIGHT_PARENTHESIS', ')', [], []),
+    ], [
+        {
+            "with_parenthesis": True,
+            "first_formatting": [],
+            "second_formatting": [],
+            "third_formatting": [],
+            "fourth_formatting": [],
+            "type": "tuple",
+            "value": [
+                {
+                    "type": "star_expression",
+                    "formatting": [],
+                    "value": {
+                        "type": "name",
+                        "value": "a",
+                    }
+                },
+                {
+                    "type": "comma",
+                    "first_formatting": [],
+                    "second_formatting": [{"type": "space", "value": " "}],
+                },
+                {
+                    "type": "name",
+                    "value": "b",
+                },
+                {
+                    "type": "comma",
+                    "first_formatting": [],
+                    "second_formatting": [{"type": "space", "value": " "}],
+                },
+                {
+                    "type": "star_expression",
+                    "formatting": [],
+                    "value": {
+                        "type": "name",
+                        "value": "c",
+                    }
+                }
+            ],
+        }
+    ])
+
 
 def test_tuple_many():
     "(a, b, c)"
@@ -220,6 +309,74 @@ def test_list_more():
         }
     ])
 
+def test_list_star_one():
+    "[*a]"
+    parse_simple([
+        ('LEFT_SQUARE_BRACKET', '[', [], []),
+        ('STAR', '*', [], []),
+        ('NAME', 'a'),
+        ('RIGHT_SQUARE_BRACKET', ']', [], []),
+    ], [
+        {
+            "type": "list",
+            "first_formatting": [],
+            "second_formatting": [],
+            "third_formatting": [],
+            "fourth_formatting": [],
+            "value": [
+                {
+                    "formatting": [],
+                    "type": "star_expression",
+                    "value": {
+                        "type": "name",
+                        "value": "a",
+                    }
+                }
+            ],
+        }
+    ])
+
+def test_list_star_more():
+    "[*a, 'foo']"
+    parse_simple([
+        ('LEFT_SQUARE_BRACKET', '[', [], []),
+        ('STAR', '*', [], []),
+        ('NAME', 'a'),
+        ('COMMA', ',', [], [('SPACE', ' ')]),
+        ('STRING', "'foo'"),
+        ('RIGHT_SQUARE_BRACKET', ']', [], []),
+    ], [
+        {
+            "type": "list",
+            "first_formatting": [],
+            "second_formatting": [],
+            "third_formatting": [],
+            "fourth_formatting": [],
+            "value": [
+                {
+                    "type": "star_expression",
+                    "formatting": [],
+                    "value": {
+                        "type": "name",
+                        "value": "a",
+                    }
+                },
+                {
+                    "first_formatting": [],
+                    "second_formatting": [{"type": "space", "value": " "}],
+                    "type": "comma",
+                },
+                {
+                    "first_formatting": [],
+                    "second_formatting": [],
+                    "type": "string",
+                    "value": "'foo'",
+                }
+            ],
+        }
+    ])
+
+
 
 def test_dict_empty():
     "{ }"
@@ -299,6 +456,7 @@ def test_dict_one_double_star():
         }
     ]
 )
+
 
 
 def test_dict_more_colon():

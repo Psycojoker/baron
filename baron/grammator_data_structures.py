@@ -101,13 +101,33 @@ def include_data_structures(pg):
     def testlist_comp_empty(empty):
         return []
 
-    @pg.production("testlist_comp : test comma test")
-    def testlist_comp_two(pack):
+    @pg.production("testlist_comp : star_expr comma star_expr")
+    def testlist_comp_two_star_star(pack):
         (test, comma, test2) = pack
         return [test, comma, test2]
 
+    @pg.production("testlist_comp : star_expr comma test")
+    def testlist_comp_two_star_test(pack):
+        (test, comma, test2) = pack
+        return [test, comma, test2]
+
+    @pg.production("testlist_comp : test comma star_expr")
+    def testlist_comp_two_test_star(pack):
+        (test, comma, test2) = pack
+        return [test, comma, test2]
+
+    @pg.production("testlist_comp : test comma test")
+    def testlist_comp_two_test_test(pack):
+        (test, comma, test2) = pack
+        return [test, comma, test2]
+
+    @pg.production("testlist_comp : star_expr comma testlist_comp")
+    def testlist_comp_star_more(pack):
+        (test, comma, testlist_comp) = pack
+        return [test, comma] + testlist_comp
+
     @pg.production("testlist_comp : test comma testlist_comp")
-    def testlist_comp_more(pack):
+    def testlist_comp_test_more(pack):
         (test, comma, testlist_comp) = pack
         return [test, comma] + testlist_comp
 
@@ -132,8 +152,18 @@ def include_data_structures(pg):
         (test,) = pack
         return [test]
 
+    @pg.production("listmaker : star_expr")
+    def listmaker_one_star(pack):
+        (test,) = pack
+        return [test]
+
     @pg.production("listmaker : test comma listmaker")
     def listmaker_more(pack):
+        (test, comma, listmaker) = pack
+        return [test, comma] + listmaker
+
+    @pg.production("listmaker : star_expr comma listmaker")
+    def listmaker_more_start(pack):
         (test, comma, listmaker) = pack
         return [test, comma] + listmaker
 
